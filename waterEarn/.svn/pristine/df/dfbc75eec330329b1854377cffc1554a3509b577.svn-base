@@ -1,0 +1,30 @@
+package com.shuidi168.earn.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.shuidi168.earn.service.IAdvertiseService;
+import com.shuidi168.earn.service.IGeneralUserService;
+import com.shuidi168.earn.util.JsonResult;
+import com.shuidi168.earn.vo.TokenVo;
+
+@RestController
+@RequestMapping(value = "Home")
+public class HomeController {
+	@Autowired
+	private IGeneralUserService generalUserService;
+	@Autowired
+	private IAdvertiseService advertiseService;
+	@GetMapping(value="home")
+	public JsonResult home(@RequestBody TokenVo tokenVo) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", generalUserService.validateToken(tokenVo));
+		return new JsonResult(map);
+	}
+}

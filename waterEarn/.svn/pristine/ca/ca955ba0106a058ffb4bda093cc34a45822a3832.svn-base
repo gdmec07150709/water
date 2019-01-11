@@ -1,0 +1,40 @@
+package com.shuidi168.earn.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.shuidi168.earn.domain.AgentUser;
+import com.shuidi168.earn.service.IAdvertiseService;
+import com.shuidi168.earn.service.IGeneralUserService;
+import com.shuidi168.earn.util.JsonResult;
+import com.shuidi168.earn.util.Token;
+import com.shuidi168.earn.util.TokenUtil;
+
+@RestController
+@RequestMapping(value = "Home")
+public class HomeController {
+	@Autowired
+	private IGeneralUserService generalUserService;
+	@Autowired
+	private IAdvertiseService advertiseService;
+	@GetMapping(value="home")
+	public JsonResult home(@RequestBody Token token) {
+		Map<String,Object> map = null;
+		if(token==null){
+			throw new RuntimeException("token为空");
+		}
+		boolean flag = TokenUtil.volidateToken(token.getSignature(), 1);
+		if(flag){
+			map = new HashMap<String,Object>();
+			map.put("advertise",advertiseService.queryAdvertise());
+			return new JsonResult(map);
+		}
+		return new JsonResult("token验证失败",10001);
+	}
+}

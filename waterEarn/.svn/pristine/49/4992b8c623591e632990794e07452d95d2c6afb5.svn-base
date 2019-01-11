@@ -1,0 +1,146 @@
+package com.shuidi168.earn.util;
+import java.security.MessageDigest;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+
+public class TokenUtil {
+	 
+    private static final int INTERVAL = 7;// token过期时间间隔 天
+    private static final String YAN = "testMRf1$789787aadfjkds//*-+'[]jfeu;384785*^*&%^%$%";// 加盐
+    private static final int HOUR = 3;// 检查token过期线程执行时间 时
+   
+    private static Logger logger = Logger.getLogger("visit");
+
+    private static Map<Integer, Token> tokenMap = new HashMap<Integer, Token>();
+    private static TokenUtil tokenUtil = null;
+    static ScheduledExecutorService scheduler =Executors.newSingleThreadScheduledExecutor(); 
+   
+
+   public static TokenUtil getTokenUtil() {
+       if (tokenUtil == null) {
+           synInit();
+       }
+
+       return tokenUtil;
+   }
+
+   private static synchronized void synInit() {
+       if (tokenUtil == null) {
+           tokenUtil = new TokenUtil();
+       }
+   }
+
+   public TokenUtil() {
+   }
+   
+   
+
+   public static Map<Integer, Token> getTokenMap() {
+       return tokenMap;
+   }
+
+   /**
+    * 产生一个token
+    */
+   public static Token generateToken(int id) {
+	   String uuiq = UUID.randomUUID().toString();
+       Token token = new Token(MD5(System.currentTimeMillis()+YAN+uuiq+id), System.currentTimeMillis());
+       synchronized (tokenMap) {
+           tokenMap.put(id, token);
+       }
+        return token;
+    }
+
+
+    /**
+     * @Title: removeToken
+     * @Description: 去除token
+     * @param @param nonce
+     * @param @return 参数
+     * @return boolean 返回类型
+     */
+    public static boolean removeToken(int id) {
+        synchronized (tokenMap) {
+            tokenMap.remove(id);
+            logger.info(tokenMap.get(id) == null ? "\n=========已注销========": "\n++++++++注销失败+++++++++++++++");
+        }
+        return true;
+    }
+
+    /**
+     * @Title: volidateToken
+     * @Description: 校验token
+     * @param @param signature
+     * @param @param nonce
+     * @param @return 参数
+     * @return boolean 返回类型
+     */
+    public static boolean volidateToken(String signature,int id) {
+        boolean flag = false;
+        Token token = (Token) tokenMap.get(id);
+        if (token != null && token.getSignature().equals(signature)) {
+            logger.info("\n=====已在线=======");
+            flag = true;
+        }
+
+        return flag;
+    }
+    
+    /**
+     * 
+     * @Title: MD5
+     * @Description: 加密
+     * @param @param s
+     * @param @return 参数
+     * @return String 返回类型
+     */
+    public final static String MD5(String s) {
+        try {
+            byte[] btInput = s.getBytes();
+            // 获得MD5摘要算法的 MessageDigest 对象
+            MessageDigest mdInst = MessageDigest.getInstance("MD5");
+            // 使用指定的字节更新摘要
+            mdInst.update(btInput);
+            // 获得密文
+            return byte2hex(mdInst.digest());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 将字节数组转换成16进制字符串
+     * @param b
+     * @return
+     */
+    private static String byte2hex(byte[] b) {
+        StringBuilder sbDes = new StringBuilder();
+        String tmp = null;
+        for (int i = 0; i < b.length; i++) {
+            tmp = (Integer.toHexString(b[i] & 0xFF));
+            if (tmp.length() == 1) {
+                sbDes.append("0");
+            }
+            sbDes.append(tmp);
+        }
+        return sbDes.toString();
+    }
+    public static void main(String[] args) {
+    	Token token = generateToken(1);
+    	System.out.println(getTokenMap().get(1));
+    	System.out.println(token.getSignature());
+    	System.out.println(volidateToken(token.getSignature(),1));
+	}
+}

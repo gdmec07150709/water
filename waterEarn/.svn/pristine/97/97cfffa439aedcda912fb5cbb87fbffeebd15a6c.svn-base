@@ -1,0 +1,17 @@
+package com.shuidi168.earn.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping(value="Demo")
+public class DemoController {
+
+	@RequestMapping(value="demo")
+	public String demo() {
+		
+		System.out.println("demo...");
+		
+		return "demo";
+	}
+}

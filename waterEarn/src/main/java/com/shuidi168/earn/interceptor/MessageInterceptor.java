@@ -1,0 +1,15 @@
+package com.shuidi168.earn.interceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+public class MessageInterceptor extends HandlerInterceptorAdapter{
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+		System.out.println("preHandle");
+		return true;
+	}
+}

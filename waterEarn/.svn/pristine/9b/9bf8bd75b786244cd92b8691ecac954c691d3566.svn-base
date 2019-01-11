@@ -1,0 +1,232 @@
+package com.shuidi168.earn.domain;
+
+import java.sql.Timestamp;
+
+/**
+ * AgentUser entity. @author MyEclipse Persistence Tools
+ */
+
+public class AgentUser implements java.io.Serializable {
+
+	// Fields
+
+	private Integer id;
+	private String phone;
+	private String password;
+	private Double money;
+	private String wxOpenId;
+	private String wxUnionId;
+	private String nickname;
+	private String country;
+	private String province;
+	private String city;
+	private Integer sex;
+	private Timestamp regTimestamp;
+	private Timestamp lastLoginTimestamp;
+	private String jwtToken;
+	private Integer isLock;
+	private Integer lockTypeId;
+	private Integer devicesId;
+	private String inviteCode;
+	private Integer parentId;
+	private String smsCode;
+
+	// Constructors
+
+	/** default constructor */
+	public AgentUser() {
+	}
+	public AgentUser(Integer id) {
+		this.id = id;
+	}
+	
+	/** minimal constructor */
+	public AgentUser(Integer lockTypeId, Integer devicesId) {
+		this.lockTypeId = lockTypeId;
+		this.devicesId = devicesId;
+	}
+
+	/** full constructor */
+	public AgentUser(String phone, String password, Double money, String wxOpenId, String wxUnionId, String nickname,
+			String country, String province, String city, Integer sex,Timestamp regTimestamp, Timestamp lastLoginTimestamp,
+			String jwtToken, Integer isLock, Integer lockTypeId, Integer devicesId, String inviteCode,Integer parentId,String smsCode) {
+		this.phone = phone;
+		this.password = password;
+		this.money = money;
+		this.wxOpenId = wxOpenId;
+		this.wxUnionId = wxUnionId;
+		this.nickname = nickname;
+		this.country = country;
+		this.province = province;
+		this.city = city;
+		this.sex = sex;
+		this.regTimestamp = regTimestamp;
+		this.lastLoginTimestamp = lastLoginTimestamp;
+		this.jwtToken = jwtToken;
+		this.isLock = isLock;
+		this.lockTypeId = lockTypeId;
+		this.devicesId = devicesId;
+		this.inviteCode = inviteCode;
+		this.parentId = parentId;
+		this.smsCode = smsCode;
+	}
+
+	// Property accessors
+
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getPhone() {
+		return this.phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Double getMoney() {
+		return this.money;
+	}
+
+	public void setMoney(Double money) {
+		this.money = money;
+	}
+
+	public String getWxOpenId() {
+		return this.wxOpenId;
+	}
+
+	public void setWxOpenId(String wxOpenId) {
+		this.wxOpenId = wxOpenId;
+	}
+
+	public String getWxUnionId() {
+		return this.wxUnionId;
+	}
+
+	public void setWxUnionId(String wxUnionId) {
+		this.wxUnionId = wxUnionId;
+	}
+
+	public String getNickname() {
+		return this.nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getCountry() {
+		return this.country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getProvince() {
+		return this.province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return this.city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public Integer getSex() {
+		return sex;
+	}
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+	public Timestamp getRegTimestamp() {
+		return this.regTimestamp;
+	}
+
+	public void setRegTimestamp(Timestamp regTimestamp) {
+		this.regTimestamp = regTimestamp;
+	}
+
+	public Timestamp getLastLoginTimestamp() {
+		return this.lastLoginTimestamp;
+	}
+
+	public void setLastLoginTimestamp(Timestamp lastLoginTimestamp) {
+		this.lastLoginTimestamp = lastLoginTimestamp;
+	}
+
+	public String getJwtToken() {
+		return this.jwtToken;
+	}
+
+	public void setJwtToken(String jwtToken) {
+		this.jwtToken = jwtToken;
+	}
+
+	public Integer getIsLock() {
+		return this.isLock;
+	}
+
+	public void setIsLock(Integer isLock) {
+		this.isLock = isLock;
+	}
+
+	public Integer getLockTypeId() {
+		return this.lockTypeId;
+	}
+
+	public void setLockTypeId(Integer lockTypeId) {
+		this.lockTypeId = lockTypeId;
+	}
+
+	public Integer getDevicesId() {
+		return this.devicesId;
+	}
+
+	public void setDevicesId(Integer devicesId) {
+		this.devicesId = devicesId;
+	}
+
+	public String getInviteCode() {
+		return inviteCode;
+	}
+
+	public void setInviteCode(String inviteCode) {
+		this.inviteCode = inviteCode;
+	}
+
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
+	public String getSmsCode() {
+		return smsCode;
+	}
+
+	public void setSmsCode(String smsCode) {
+		this.smsCode = smsCode;
+	}
+}

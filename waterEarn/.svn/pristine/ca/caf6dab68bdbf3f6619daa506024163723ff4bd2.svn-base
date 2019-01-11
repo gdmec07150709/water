@@ -1,0 +1,81 @@
+package com.shuidi168.earn.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.shuidi168.earn.dao.IGeneralUserDAO;
+import com.shuidi168.earn.domain.GeneralUser;
+import com.shuidi168.earn.util.AssertUtil;
+import com.shuidi168.earn.util.CreateRandomVcode;
+import com.shuidi168.earn.util.JsonResult;
+import com.shuidi168.earn.util.RegisterConstants;
+import com.shuidi168.earn.util.RegisterErrCode;
+import com.shuidi168.earn.vo.VerifyVo;
+
+/**
+ * 手机短信验证码相关
+ * 
+ * @author chenyumin
+ * @data 2018/12/28
+ */
+@RestController
+@RequestMapping(value = "Verify")
+public class VerifyController {
+
+	@Autowired
+	private IGeneralUserDAO generalUserDao;
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+	// 通过手机号查询对象
+	private final static String queryGeneralUserByPhone = "queryGeneralUserByPhone";
+
+	/**
+	 * 获取短信验证码
+	 * 
+	 * @param VerifyVo
+	 *            包含以下参数的业务对象
+	 * @param phone
+	 *            手机号
+	 * @param type
+	 *            验证码类型 1注册 2绑定手机
+	 * @return 返回state：1表示成功
+	 */
+	@GetMapping(value = "getVerifyCode")
+	public JsonResult getVerifyCode(@RequestBody VerifyVo verifyVo) {
+		String phone = verifyVo.getPhone();
+		int type = verifyVo.getType();
+		AssertUtil.instance().isNotNull(phone, "手机号不能为空", RegisterErrCode.PHONE_NULL)
+				.isMobile(phone, "手机号格式不对", RegisterErrCode.INVALID_PHONE).isLength(phone,
+						RegisterConstants.LENGTH_PHONE, "手机号长度必须为" + RegisterConstants.LENGTH_PHONE + "位",
+						RegisterErrCode.PHONE_NULL, RegisterErrCode.INVALID_PHONE_LENGTH);
+		// 手机号数据库验证，查询数据库是否已经存在当前注册手机号
+		List<GeneralUser> list = generalUserDao.executeQuery(queryGeneralUserByPhone, phone);
+		if(!list.isEmpty()){
+			String wxOpenId = list.get(0).getWxOpenId();
+			if(wxOpenId!=null){
+				return new JsonResult("手机号已经被注册",RegisterErrCode.REGISTERED_PHONE);				
+			}
+		}
+		// 模拟手机短信生成随机验证码
+		String smsCode = CreateRandomVcode.createRandomVcode();
+		if(type==1){
+			redisTemplate.opsForValue().set("registerCode|"+phone,smsCode, 15, TimeUnit.MINUTES);			
+		}else{
+			redisTemplate.opsForValue().set("bindCode|"+phone,smsCode, 15, TimeUnit.MINUTES);						
+		}
+		System.out.println(redisTemplate.opsForValue().get("registerCode|" + phone));
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("smsCode", smsCode);
+		JsonResult jsonResult = new JsonResult(map);
+		return jsonResult;
+	}
+}

@@ -1,0 +1,28 @@
+package com.shuidi168.earn.service.impl;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.shuidi168.earn.dao.IAdvertiseDao;
+import com.shuidi168.earn.dao.IGeneralUserDAO;
+import com.shuidi168.earn.domain.Advertise;
+import com.shuidi168.earn.domain.AgentUser;
+import com.shuidi168.earn.service.IAdvertiseService;
+
+@Service
+@Transactional
+public class AdvertiseServiceImpl implements IAdvertiseService {
+    @Autowired
+    private IAdvertiseDao advertiseDao;
+	@Override
+	public List<Advertise> queryAdvertise() {
+		// TODO Auto-generated method stub
+		return advertiseDao.findAll();
+	}
+	
+}

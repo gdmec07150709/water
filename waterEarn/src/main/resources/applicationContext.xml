@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+
+
+    <mvc:annotation-driven/>
+
+	<!-- 自动扫描与装配bean -->
+	<context:component-scan base-package="com.shuidi168.earn"></context:component-scan>
+
+	<!-- 读取properties配置文件 -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+				<value>classpath:redis.properties</value>
+			</list>
+
+		</property>
+	</bean>
+
+
+	<!-- 配置数据源c3p0 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="user" value="${username}"></property>
+		<property name="password" value="${password}"></property>
+		<property name="jdbcUrl" value="${url}"></property>
+		<property name="driverClass" value="${driver_class}"></property>
+
+		<!-- 初始化池子大小 -->
+		<property name="initialPoolSize" value="${initPoolSize}"></property>
+
+		<!-- 池子最大数 -->
+		<property name="maxPoolSize" value="${maxPoolSize}"></property>
+	</bean>
+
+	<!-- Hibernate session factory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		
+		<!-- //加载实体类的映射文件位置及名称 -->
+        <property name="mappingLocations">
+			<list>
+				<value>classpath:com/shuidi168/earn/domain/*.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+				<prop key="hibernate.enable_lazy_load_no_trans">${hibernate.enable_lazy_load_no_trans}</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 事务扫描开始(开启@Tranctional) -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+		<!-- redis 相关配置 -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxActive" value="${cache.redis.maxActive}" />
+        <property name="maxIdle" value="${cache.redis.maxIdle}" />
+        <property name="maxWait" value="${cache.redis.maxWait}" />
+        <property name="testOnBorrow" value="${cache.redis.testOnBorrow}" />
+    </bean>
+
+    <bean id="redisConnectionFactory"
+        class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="usePool" value="true"></property>
+        <property name="hostName" value="${cache.redis.host}" />
+        <property name="port" value="${cache.redis.port}" />
+        <property name="password" value="${cache.redis.password}" />
+        <property name="timeout" value="${cache.redis.timeout}" />
+        <property name="database" value="${cache.redis.db}"></property>
+        <constructor-arg index="0" ref="jedisPoolConfig" />
+    </bean>
+
+    <bean id="redisCache" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="redisConnectionFactory" />
+        <property name="keySerializer" ref="stringRedisSerializer" />
+        <property name="valueSerializer" ref="stringRedisSerializer" />
+        <property name="hashKeySerializer" ref="stringRedisSerializer" />
+        <property name="hashValueSerializer" ref="stringRedisSerializer" />
+    </bean>
+
+    <bean id="stringRedisSerializer"
+        class="org.springframework.data.redis.serializer.StringRedisSerializer" />	
+</beans>

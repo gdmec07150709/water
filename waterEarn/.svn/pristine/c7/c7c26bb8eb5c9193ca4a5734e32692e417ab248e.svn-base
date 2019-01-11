@@ -1,0 +1,99 @@
+package com.shuidi168.earn.util;
+
+/**
+ * 注册参数错误码
+ * 
+ * @author Administrator
+ *
+ */
+public class LoginErrCode {
+
+	/**
+	 * 手机号不能为空
+	 */
+	public final static int PHONE_NULL = 10001;
+	/**
+	 * 手机号格式不对
+	 */
+	public final static int INVALID_PHONE = 10002;
+	/**
+	 * 手机号长度不正确
+	 */
+	public final static int INVALID_PHONE_LENGTH = 10003;
+	/**
+	 * 密码为空
+	 */
+	public final static int PASSWORD_NULL = 10004;
+	/**
+	 * 密码的长度不正确
+	 */
+	public final static int INVALID_PASSWORD_LENGTH = 10005;
+	/**
+	 * 验证码为空
+	 */
+	public final static int SMS_CODE_NULL = 10006;
+	/**
+	 * 验证码长度不正确
+	 */
+	public final static int SMS_CODE_LENGTH = 10007;
+	/**
+	 * 该手机号已被注册
+	 */
+	public final static int REGISTERED_PHONE = 10008;
+	/**
+	 * 短信手机号和注册号不同
+	 */
+	public final static int DIFFERENT_PHONE = 10009;
+	/**
+	 * 验证码不一致
+	 */
+	public final static int SMS_CODE_ERROR = 10010;
+	/**
+	 * 验证码失效
+	 */
+	public final static int SMS_CODE_FAILURE = 10011;
+	/**
+	 * 邀请码错误
+	 */
+	public final static int INVITE_CODE_ERROR = 10012;
+	/**
+	 * 邀请码长度不正确
+	 */
+	public final static int  INVALID_INVITECODE_LENGTH= 10013;
+	/**
+	 * 设备id为空
+	 */
+	public final static  int OS_VERSION_NULL = 10014;
+	/**
+	 * 没有该用户
+	 */
+	public final static  int USER_NULL = 10015;
+	/**
+	 * 微信openId为空
+	 */
+	public static final int WX_OPENID_NULL = 10016;
+	/**
+	 * 手机品牌
+	 */
+	public static final int BRAND_NULL = 10017;
+	/**
+	 * 手机型号为空
+	 */
+	public static final int MODEL_NULL = 10018;
+	/**
+	 * 重新发送短信
+	 */
+	public static final int RESEND = 10019;
+	/**
+	 * 未绑定手机
+	 */
+	public static final int NOT_BIND_PHONE = 10020;
+	/**
+	 * 手机号已被绑定
+	 */
+	public static final int PHONE_HAS_BEEN_BINDED = 10021;
+	/**
+	 * 微信已经被绑定
+	 */
+	public static final int WECHAT_HAS_BEEN_BINDED = 10022;
+}
